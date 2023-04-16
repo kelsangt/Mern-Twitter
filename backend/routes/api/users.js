@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
 const express = require('express');
+const passport = require('passport');
 const router = express.Router();
 
 router.get('/', function(req, res, next) {
@@ -28,7 +29,7 @@ router.post('/register', async (req, res, next) => {
     err.errors = errors;
     return next(err);
   }
-  
+
   const newUser = new User({
     username: req.body.username,
     email: req.body.email
@@ -48,6 +49,19 @@ router.post('/register', async (req, res, next) => {
       }
     })
   });
+});
+
+router.post('/login', async (req, res, next) => {
+  passport.authenticate('local', async function(err, user) {
+    if (err) return next(err);
+    if (!user) {
+      const err = new Error('Invalid credentials');
+      err.statusCode = 400;
+      err.errors = { email: "Invalid credentials" };
+      return next(err);
+    }
+    return res.json({ user });
+  })(req, res, next);
 });
 
 module.exports = router;
