@@ -9,6 +9,7 @@ const debug = require('debug');
 const { isProduction } = require('./config/keys');
 
 require('./models/User');
+require('./models/Tweet');
 
 require('./config/passport');
 const passport = require('passport');
